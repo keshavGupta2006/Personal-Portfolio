@@ -21,6 +21,11 @@ export default function Contact() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email);
+    if (!emailOk) {
+      setState({ loading: false, ok: false, error: "Please enter a valid email." });
+      return;
+    }
     setState({ loading: true, ok: false, error: "" });
     try {
       await axios.post(`${API}/contact`, form);
@@ -75,7 +80,7 @@ export default function Contact() {
               <Field
                 label="02 — Email"
                 name="email"
-                type="email"
+                type="text"
                 value={form.email}
                 onChange={onChange}
                 required
