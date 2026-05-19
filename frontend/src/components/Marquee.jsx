@@ -1,10 +1,10 @@
 const items = [
-  "Available 2026",
+  "By candlelight",
   "Software Developer",
-  "Computer Science Student",
+  "Wandering Student",
   "Currently building",
-  "Open to collab",
-  "Based remote",
+  "Open to quests",
+  "Camp open · 2026",
 ];
 
 export default function Marquee() {

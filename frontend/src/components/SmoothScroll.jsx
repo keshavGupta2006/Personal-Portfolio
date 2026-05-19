@@ -3,6 +3,10 @@ import Lenis from "lenis";
 
 export default function SmoothScroll() {
   useEffect(() => {
+    // Allow disabling for screenshot/automation: ?nosmooth=1
+    if (typeof window !== "undefined" && window.location.search.includes("nosmooth")) {
+      return;
+    }
     const lenis = new Lenis({
       duration: 1.15,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),

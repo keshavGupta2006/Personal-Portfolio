@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
+import { Send, Mail, Github, Linkedin, Twitter } from "lucide-react";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const ease = [0.76, 0, 0.24, 1];
 
 const socials = [
-  { label: "GitHub", href: "https://github.com" },
-  { label: "Twitter / X", href: "https://x.com" },
-  { label: "LinkedIn", href: "https://linkedin.com" },
-  { label: "Read.cv", href: "https://read.cv" },
+  { Icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
+  { Icon: Github, href: "https://github.com", label: "GitHub" },
+  { Icon: Twitter, href: "https://x.com", label: "X / Twitter" },
 ];
 
 export default function Contact() {
@@ -35,42 +35,49 @@ export default function Contact() {
       const detail =
         err?.response?.data?.detail?.[0]?.msg ||
         err?.response?.data?.detail ||
-        "Something went wrong. Try again.";
+        "The raven could not deliver your message. Try again.";
       setState({ loading: false, ok: false, error: String(detail) });
     }
   };
 
   return (
     <section
-      id="contact"
-      className="relative bg-[#0a0a0a] pt-32 pb-12"
+      id="connect"
+      className="relative py-24 sm:py-32 lg:py-40 border-t border-[var(--border)]"
       data-testid="contact-section"
     >
-      <div className="w-full max-w-[1800px] mx-auto px-6 sm:px-12 lg:px-16">
-        <div className="label mb-6">[04] — Contact</div>
-
-        <motion.h2
-          initial={{ y: 50, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          transition={{ duration: 1.1, ease }}
-          viewport={{ once: true }}
-          className="font-display text-white text-[16vw] sm:text-[14vw] lg:text-[12vw] leading-[0.86] tracking-[-0.04em]"
+      <div className="w-full max-w-[1400px] mx-auto px-6 sm:px-12 lg:px-16">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, ease }}
+          viewport={{ once: true, margin: "-100px" }}
+          className="text-center mb-16"
         >
-          Let&apos;s
-          <br />
-          <span className="italic text-[var(--accent)]">talk.</span>
-        </motion.h2>
+          <div className="label mb-4">✦ Connect ✦</div>
+          <h2 className="font-display text-5xl sm:text-6xl lg:text-7xl text-[var(--fg)]">
+            Send a <span className="italic text-[var(--accent)]">raven</span>
+          </h2>
+          <p className="mt-4 text-[var(--fg-dim)] text-sm">
+            Looking to collaborate, hire, or just chat? Drop a line.
+          </p>
+        </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 mt-20">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
           {/* Form */}
           <form
             onSubmit={onSubmit}
-            className="lg:col-span-7 space-y-10"
+            className="lg:col-span-7 parchment rounded-md p-7 sm:p-9 space-y-6 relative"
             data-testid="contact-form"
           >
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
+            <span className="corner-tl" />
+            <span className="corner-tr" />
+            <span className="corner-bl" />
+            <span className="corner-br" />
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <Field
-                label="01 — Your name"
+                label="Your name"
                 name="name"
                 value={form.name}
                 onChange={onChange}
@@ -78,7 +85,7 @@ export default function Contact() {
                 testId="contact-name"
               />
               <Field
-                label="02 — Email"
+                label="Email"
                 name="email"
                 type="text"
                 value={form.email}
@@ -89,36 +96,30 @@ export default function Contact() {
             </div>
 
             <div>
-              <label className="label block mb-3">03 — Project / message</label>
+              <label className="label-dim block mb-2">Your message</label>
               <textarea
                 name="message"
-                rows={4}
+                rows={5}
                 required
                 value={form.message}
                 onChange={onChange}
                 data-testid="contact-message"
-                className="w-full bg-transparent border-b-2 border-white/15 focus:border-[var(--accent)] py-3 text-white text-base placeholder-white/30 resize-none transition-colors"
-                placeholder="Tell me a little about the idea..."
+                placeholder="Tell me about the idea..."
+                className="w-full bg-[#0a0f24]/60 border border-[var(--border-strong)] focus:border-[var(--accent)] rounded-sm px-4 py-3 text-[var(--fg)] text-sm placeholder-[var(--muted)] resize-none transition-colors"
               />
             </div>
 
-            <div className="flex items-center gap-8 pt-2">
+            <div className="flex items-center gap-6 flex-wrap">
               <button
                 type="submit"
                 disabled={state.loading}
                 data-testid="contact-submit"
                 data-cursor="send"
-                className="group inline-flex items-center gap-4 border border-white/20 hover:border-[var(--accent)] hover:text-[var(--accent)] px-8 py-4 text-white label transition-colors disabled:opacity-50"
+                className="btn-quest disabled:opacity-60"
               >
-                <span>{state.loading ? "Sending..." : "Send transmission"}</span>
-                <span
-                  className="text-base transition-transform duration-500 group-hover:translate-x-1"
-                  aria-hidden
-                >
-                  →
-                </span>
+                <Send size={14} />
+                {state.loading ? "Sending..." : "Release the raven"}
               </button>
-
               {state.ok && (
                 <span
                   className="label text-[var(--accent)]"
@@ -129,7 +130,7 @@ export default function Contact() {
               )}
               {state.error && (
                 <span
-                  className="label text-red-400"
+                  className="text-red-400 text-xs font-mono uppercase tracking-wider"
                   data-testid="contact-error"
                 >
                   {state.error}
@@ -138,34 +139,48 @@ export default function Contact() {
             </div>
           </form>
 
-          {/* Socials / direct */}
-          <aside className="lg:col-span-4 lg:col-start-9 space-y-12">
-            <div>
-              <div className="label mb-3">— Direct</div>
+          {/* Side info */}
+          <aside className="lg:col-span-5 space-y-8">
+            <div className="parchment rounded-md p-7 relative">
+              <span className="corner-tl" />
+              <span className="corner-tr" />
+              <span className="corner-bl" />
+              <span className="corner-br" />
+              <div className="label mb-3">Direct</div>
               <a
-                href="mailto:hello@studio-k.dev"
-                className="font-display text-white text-3xl lg:text-4xl link-underline hover:text-[var(--accent)] transition-colors"
+                href="mailto:hello@wanderer.dev"
+                className="inline-flex items-center gap-3 font-display text-2xl lg:text-3xl text-[var(--fg)] hover:text-[var(--accent)] transition-colors"
                 data-testid="contact-email-direct"
-                data-cursor="copy"
               >
-                hello@studio-k.dev
+                <Mail size={20} />
+                hello@wanderer.dev
               </a>
+              <p className="mt-3 text-[var(--fg-dim)] text-sm">
+                Usually replies within 24 hours, except on quests.
+              </p>
             </div>
 
-            <div>
-              <div className="label mb-3">— Elsewhere</div>
+            <div className="parchment rounded-md p-7 relative">
+              <span className="corner-tl" />
+              <span className="corner-tr" />
+              <span className="corner-bl" />
+              <span className="corner-br" />
+              <div className="label mb-4">Elsewhere</div>
               <ul className="space-y-3">
-                {socials.map((s) => (
-                  <li key={s.label}>
+                {socials.map(({ Icon, href, label }) => (
+                  <li key={label}>
                     <a
-                      href={s.href}
+                      href={href}
                       target="_blank"
                       rel="noreferrer"
-                      className="label inline-flex items-center gap-3 text-white hover:text-[var(--accent)]"
-                      data-testid={`social-${s.label.toLowerCase().replace(/[^a-z0-9]/g, "-")}`}
+                      className="group inline-flex items-center gap-3 text-[var(--fg)] hover:text-[var(--accent)] transition-colors"
+                      data-testid={`social-${label.toLowerCase().replace(/[^a-z0-9]/g, "-")}`}
                     >
-                      <span className="w-6 h-px bg-current" />
-                      {s.label}
+                      <Icon size={16} className="text-[var(--accent)]" />
+                      <span className="text-sm">{label}</span>
+                      <span className="text-xs label-dim opacity-0 group-hover:opacity-100 transition-opacity">
+                        ↗
+                      </span>
                     </a>
                   </li>
                 ))}
@@ -175,9 +190,9 @@ export default function Contact() {
         </div>
 
         {/* Footer */}
-        <div className="mt-32 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <span className="label">© 2026 — studio/k. all rights reserved.</span>
-          <span className="label">Designed &amp; coded with attention.</span>
+        <div className="mt-24 pt-8 border-t border-[var(--border)] flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+          <span className="label-dim">© 2026 — The Wanderer. Be kind out there.</span>
+          <span className="label-dim">Crafted by candlelight. Coded with care.</span>
         </div>
       </div>
     </section>
@@ -187,7 +202,7 @@ export default function Contact() {
 function Field({ label, name, value, onChange, type = "text", required, testId }) {
   return (
     <div>
-      <label className="label block mb-3">{label}</label>
+      <label className="label-dim block mb-2">{label}</label>
       <input
         type={type}
         name={name}
@@ -195,8 +210,7 @@ function Field({ label, name, value, onChange, type = "text", required, testId }
         onChange={onChange}
         required={required}
         data-testid={testId}
-        className="w-full bg-transparent border-b-2 border-white/15 focus:border-[var(--accent)] py-3 text-white text-base placeholder-white/30 transition-colors"
-        placeholder=" "
+        className="w-full bg-[#0a0f24]/60 border border-[var(--border-strong)] focus:border-[var(--accent)] rounded-sm px-4 py-3 text-[var(--fg)] text-sm placeholder-[var(--muted)] transition-colors"
       />
     </div>
   );

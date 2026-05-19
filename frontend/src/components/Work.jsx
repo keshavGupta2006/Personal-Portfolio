@@ -1,134 +1,144 @@
-import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import axios from "axios";
+import { ExternalLink, Play } from "lucide-react";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const ease = [0.76, 0, 0.24, 1];
 
+function rarityColor(r) {
+  if (r === "Legendary") return "#ff8128";
+  if (r === "Epic") return "#b86bd6";
+  if (r === "Rare") return "#5fa8d4";
+  return "#9c7e4a";
+}
+
 export default function Work() {
   const [projects, setProjects] = useState([]);
-  const [active, setActive] = useState(null);
-  const [pos, setPos] = useState({ x: 0, y: 0 });
-  const sectionRef = useRef(null);
 
   useEffect(() => {
-    let mounted = true;
+    let m = true;
     axios
       .get(`${API}/projects`)
-      .then((r) => {
-        if (mounted) setProjects(r.data || []);
-      })
+      .then((r) => m && setProjects(r.data || []))
       .catch(() => {});
     return () => {
-      mounted = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    const move = (e) => {
-      const rect = sectionRef.current?.getBoundingClientRect();
-      if (!rect) return;
-      setPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-    };
-    const node = sectionRef.current;
-    if (node) node.addEventListener("mousemove", move);
-    return () => {
-      if (node) node.removeEventListener("mousemove", move);
+      m = false;
     };
   }, []);
 
   return (
     <section
-      id="work"
-      ref={sectionRef}
-      className="relative py-24 sm:py-32 lg:py-40 border-t border-white/10"
+      id="projects"
+      className="relative py-24 sm:py-32 lg:py-40 border-t border-[var(--border)]"
       data-testid="work-section"
     >
-      <div className="w-full max-w-[1800px] mx-auto px-6 sm:px-12 lg:px-16">
-        <div className="flex items-end justify-between gap-8 mb-16 lg:mb-24">
-          <div>
-            <div className="label mb-4">[03] — Selected Work</div>
-            <h2 className="font-display text-white text-5xl sm:text-6xl lg:text-7xl leading-[0.9] tracking-tight">
-              The
-              <span className="italic text-[var(--accent)]"> archive</span>.
-            </h2>
-          </div>
-          <div className="label hidden sm:block">
-            {String(projects.length).padStart(2, "0")} projects
-          </div>
-        </div>
+      <div className="w-full max-w-[1400px] mx-auto px-6 sm:px-12 lg:px-16">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, ease }}
+          viewport={{ once: true, margin: "-100px" }}
+          className="text-center mb-16"
+        >
+          <div className="label mb-4">✦ Quest Log ✦</div>
+          <h2 className="font-display text-5xl sm:text-6xl lg:text-7xl text-[var(--fg)]">
+            <span className="italic text-[var(--accent)]">Projects</span>
+          </h2>
+          <p className="mt-4 text-[var(--fg-dim)] text-sm">
+            Legendary encounters conquered. Each worth remembering.
+          </p>
+        </motion.div>
 
-        <ul className="border-t border-white/10">
+        <div className="space-y-6 lg:space-y-7">
           {projects.map((p, i) => (
-            <li
+            <motion.div
               key={p.id}
-              onMouseEnter={() => setActive(p)}
-              onMouseLeave={() => setActive(null)}
-              className="group border-b border-white/10"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease, delay: i * 0.08 }}
+              viewport={{ once: true, margin: "-80px" }}
+              className="parchment rounded-md p-6 sm:p-8 relative group"
               data-testid={`project-row-${p.id}`}
             >
-              <a
-                href={p.url || "#"}
-                onClick={(e) => !p.url && e.preventDefault()}
-                className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 py-8 lg:py-10 px-2 lg:px-4 transition-colors duration-500 group-hover:bg-white/[0.02]"
-                data-cursor="view"
-              >
-                <div className="flex items-baseline gap-6 lg:gap-10 min-w-0 flex-1">
-                  <span className="label shrink-0">{p.index}</span>
-                  <h3 className="font-display text-white text-4xl sm:text-5xl lg:text-7xl tracking-tight leading-none transition-transform duration-700 ease-out group-hover:translate-x-3 truncate">
-                    {p.title}
-                  </h3>
+              <span className="corner-tl" />
+              <span className="corner-tr" />
+              <span className="corner-bl" />
+              <span className="corner-br" />
+
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 items-center">
+                {/* Thumbnail */}
+                <div className="md:col-span-4 lg:col-span-3">
+                  <div className="relative overflow-hidden rounded-sm aspect-[4/3] border border-[var(--border-strong)]">
+                    <img
+                      src={p.image}
+                      alt={p.title}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f24]/80 to-transparent" />
+                    <div className="absolute top-2 left-2 label-dim flex items-center gap-2">
+                      <span
+                        className="inline-block w-1.5 h-1.5 rounded-full"
+                        style={{ background: rarityColor(p.rarity) }}
+                      />
+                      <span style={{ color: rarityColor(p.rarity) }}>
+                        {p.rarity}
+                      </span>
+                    </div>
+                    <div className="absolute bottom-2 right-2 label-dim text-[var(--fg-dim)]">
+                      {p.year}
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center gap-6 lg:gap-12 shrink-0">
-                  <span className="label hidden md:inline">{p.role}</span>
-                  <span className="label">{p.year}</span>
-                  <span
-                    className="text-[var(--accent)] text-2xl transition-transform duration-500 group-hover:rotate-45"
-                    aria-hidden
+
+                {/* Content */}
+                <div className="md:col-span-8 lg:col-span-7">
+                  <div className="flex items-baseline gap-4 flex-wrap">
+                    <span className="label-dim">QUEST {p.index}</span>
+                    <h3 className="font-display text-3xl lg:text-4xl text-[var(--fg)] leading-tight">
+                      {p.title}
+                    </h3>
+                  </div>
+                  <div className="mt-2 text-[var(--accent-2)] text-sm">
+                    {p.role}
+                  </div>
+                  <p className="mt-4 text-[var(--fg-dim)] text-sm leading-relaxed max-w-2xl">
+                    {p.description}
+                  </p>
+                  <div className="mt-5 flex flex-wrap gap-1.5">
+                    {p.stack.map((s) => (
+                      <span
+                        key={s}
+                        className="text-[11px] px-2.5 py-1 rounded-full border border-[var(--border-strong)] text-[var(--fg-dim)]"
+                      >
+                        {s}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="md:col-span-12 lg:col-span-2 flex flex-row lg:flex-col gap-3 lg:items-end">
+                  <a
+                    href={p.url || "#"}
+                    onClick={(e) => !p.url && e.preventDefault()}
+                    className="btn-ghost"
+                    data-testid={`project-link-${p.id}`}
                   >
-                    ↗
-                  </span>
-                </div>
-              </a>
-
-              {/* Mobile description */}
-              <div className="lg:hidden px-2 pb-8 -mt-2 text-white/60 text-sm max-w-md">
-                {p.description}
-              </div>
-            </li>
-          ))}
-        </ul>
-
-        {/* Hover image */}
-        <AnimatePresence>
-          {active && (
-            <motion.div
-              key={active.id}
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.92, y: 10 }}
-              transition={{ duration: 0.35, ease }}
-              className="hidden lg:block fixed pointer-events-none z-30"
-              style={{
-                left: `${pos.x + (sectionRef.current?.getBoundingClientRect().left || 0)}px`,
-                top: `${pos.y + (sectionRef.current?.getBoundingClientRect().top || 0)}px`,
-                transform: "translate(-50%, -50%)",
-              }}
-            >
-              <div className="relative w-[26rem] h-[18rem] overflow-hidden border border-white/10 shadow-2xl">
-                <img
-                  src={active.image}
-                  alt={active.title}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between label text-white/90">
-                  <span>{active.title}</span>
-                  <span>{active.stack[0]}</span>
+                    <ExternalLink size={12} /> Link
+                  </a>
+                  <button
+                    className="btn-ghost"
+                    onClick={(e) => e.preventDefault()}
+                    data-testid={`project-demo-${p.id}`}
+                  >
+                    <Play size={12} /> Demo
+                  </button>
                 </div>
               </div>
             </motion.div>
-          )}
-        </AnimatePresence>
+          ))}
+        </div>
       </div>
     </section>
   );

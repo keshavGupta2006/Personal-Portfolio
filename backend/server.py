@@ -37,7 +37,7 @@ class StatusCheckCreate(BaseModel):
 class Project(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str
-    index: str  # "001"
+    index: str
     title: str
     role: str
     year: str
@@ -45,6 +45,28 @@ class Project(BaseModel):
     description: str
     image: str
     url: Optional[str] = None
+    rarity: str = "Rare"
+
+
+class Experience(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    level: int
+    company: str
+    role: str
+    period: str
+    description: str
+    stack: List[str]
+    location: str
+    current: bool = False
+
+
+class Achievement(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    title: str
+    sub: str
+    rank: str  # "1st", "2nd", "Finalist", "Lead", etc.
 
 
 class ContactMessage(BaseModel):
@@ -62,26 +84,27 @@ class ContactCreate(BaseModel):
     message: str = Field(min_length=1, max_length=4000)
 
 
-# ---------- Seeded Projects (static portfolio data) ----------
+# ---------- Seeded Data ----------
 PROJECTS: List[Project] = [
     Project(
         id="proj-orbit",
-        index="001",
+        index="I",
         title="Orbit Console",
-        role="Full-Stack / UI Engineering",
+        role="Solo · Lead Engineer",
         year="2025",
         stack=["React", "FastAPI", "MongoDB", "WebSockets"],
         description=(
             "A real-time observability dashboard for distributed systems. "
-            "Streaming metrics, log search, and incident timelines built around "
-            "a single keyboard-driven command bar."
+            "Streaming metrics, log search, and incident timelines, all "
+            "steered by a single keyboard-driven command bar."
         ),
         image="https://static.prod-images.emergentagent.com/jobs/348839a8-0406-492d-9aad-6bd977e41575/images/31f11aec0fb31305869326c5954a7046d4d58351bd0b10714338c9e6a88d2d08.png",
+        rarity="Legendary",
         url=None,
     ),
     Project(
         id="proj-glass",
-        index="002",
+        index="II",
         title="Glasshouse Studio",
         role="Design Engineer",
         year="2025",
@@ -91,38 +114,113 @@ PROJECTS: List[Project] = [
             "transitions, magnetic interactions, and a custom asset pipeline."
         ),
         image="https://static.prod-images.emergentagent.com/jobs/348839a8-0406-492d-9aad-6bd977e41575/images/97d9015ae76ec2301f4b9c6db61b94a4cf97f9cf0a076873db41b099ac3b11a8.png",
+        rarity="Epic",
         url=None,
     ),
     Project(
         id="proj-paper",
-        index="003",
+        index="III",
         title="Paperweight",
-        role="Founder / Engineer",
+        role="Founder · Engineer",
         year="2024",
         stack=["Python", "LLMs", "React"],
         description=(
             "A research note-taking tool that turns scattered PDFs into a "
             "queryable, citation-aware knowledge graph. Built as a side "
-            "project during sophomore year."
+            "quest during sophomore year."
         ),
         image="https://static.prod-images.emergentagent.com/jobs/348839a8-0406-492d-9aad-6bd977e41575/images/9189a4adca60b82de849789e25a2e91edb0239131657ee7d97bba2e729617ad6.png",
+        rarity="Rare",
         url=None,
     ),
     Project(
         id="proj-signal",
-        index="004",
+        index="IV",
         title="Signal/Noise",
-        role="Engineer / Sound Design",
+        role="Engineer · Sound Design",
         year="2024",
         stack=["Web Audio", "Canvas", "React"],
         description=(
             "An interactive zine exploring information overload. Generative "
-            "audio reacts to scroll position, and every section is a fully "
+            "audio reacts to scroll position; every section speaks a "
             "different visual language."
         ),
         image="https://static.prod-images.emergentagent.com/jobs/348839a8-0406-492d-9aad-6bd977e41575/images/aadeaa0e389885bb0a9234114eb15dbf2f293d48ed8108912489b6d9f4d4fe81.png",
+        rarity="Rare",
         url=None,
     ),
+]
+
+EXPERIENCES: List[Experience] = [
+    Experience(
+        id="exp-aurora",
+        level=22,
+        company="Aurora Labs",
+        role="Software Engineer (Intern)",
+        period="May 2025 — Aug 2025",
+        description=(
+            "Owned the rebuild of the in-product analytics surface. Shipped "
+            "a new event pipeline, cut p95 query latency by 38%, and led "
+            "two cross-team design reviews."
+        ),
+        stack=["TypeScript", "React", "Postgres", "Kafka"],
+        location="Remote",
+        current=True,
+    ),
+    Experience(
+        id="exp-foundry",
+        level=20,
+        company="The Foundry Co.",
+        role="Frontend Engineer (Part-time)",
+        period="Sep 2024 — Apr 2025",
+        description=(
+            "Rebuilt the marketing site with a custom CMS and a motion "
+            "system used across all studio sites. Mentored two juniors on "
+            "accessibility and component patterns."
+        ),
+        stack=["Next.js", "GSAP", "Sanity"],
+        location="Hybrid",
+        current=False,
+    ),
+    Experience(
+        id="exp-camp",
+        level=18,
+        company="CampusOS",
+        role="Open-Source Maintainer",
+        period="Jan 2024 — Present",
+        description=(
+            "Maintain a small framework used by student clubs to run "
+            "internal tooling. ~1.2k stars, weekly releases, very kind "
+            "issue threads."
+        ),
+        stack=["Python", "FastAPI", "Vite"],
+        location="GitHub",
+        current=False,
+    ),
+    Experience(
+        id="exp-uni",
+        level=16,
+        company="State University · CS",
+        role="B.S. Computer Science",
+        period="2022 — 2026",
+        description=(
+            "Coursework in distributed systems, ML, HCI. TA'd intro to "
+            "programming for three semesters. Built a small lecture-notes "
+            "search tool that is somehow still alive."
+        ),
+        stack=["Algorithms", "Systems", "HCI"],
+        location="Campus",
+        current=False,
+    ),
+]
+
+ACHIEVEMENTS: List[Achievement] = [
+    Achievement(id="a1", title="Hackathon Open", sub="Campus · Winners", rank="1st"),
+    Achievement(id="a2", title="NASA Space Apps", sub="Global · Nominee", rank="Nominee"),
+    Achievement(id="a3", title="Founders Showcase", sub="Demo Day", rank="2nd"),
+    Achievement(id="a4", title="GDSC Chapter", sub="Lead · 1y", rank="Lead"),
+    Achievement(id="a5", title="ICPC Regional", sub="Round of 32", rank="Finalist"),
+    Achievement(id="a6", title="Type-A-Day", sub="365 days of writing", rank="Streak"),
 ]
 
 
@@ -161,6 +259,16 @@ async def get_project(project_id: str):
         if p.id == project_id:
             return p
     raise HTTPException(status_code=404, detail="Project not found")
+
+
+@api_router.get("/experiences", response_model=List[Experience])
+async def list_experiences():
+    return EXPERIENCES
+
+
+@api_router.get("/achievements", response_model=List[Achievement])
+async def list_achievements():
+    return ACHIEVEMENTS
 
 
 @api_router.post("/contact", response_model=ContactMessage)

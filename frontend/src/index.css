@@ -1,17 +1,30 @@
-@import url("https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@900,800,700,500,400&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700;9..144,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-    --bg: #050505;
-    --bg-elev: #0a0a0a;
-    --fg: #e5e5e5;
-    --fg-dim: #a0a0a0;
-    --accent: #d4ed31;
-    --border: rgba(255, 255, 255, 0.1);
+    /* Night sky + parchment palette */
+    --bg: #070a14;
+    --bg-elev: #0e1426;
+    --panel: #131a30;
+    --panel-2: #1a2240;
+    --border: rgba(212, 161, 58, 0.18);
+    --border-strong: rgba(212, 161, 58, 0.45);
+
+    --fg: #f3e7cf; /* parchment cream */
+    --fg-dim: #b3a37e;
+    --muted: #7d7660;
+
+    --accent: #ff8128; /* quest orange */
+    --accent-2: #ffa256;
+    --gold: #d4a13a;
+    --ember: #ff6a1f;
+    --sky-1: #0a0f24;
+    --sky-2: #182245;
 }
 
 * {
@@ -24,7 +37,7 @@ body {
     padding: 0;
     background: var(--bg);
     color: var(--fg);
-    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-family: "Manrope", system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     cursor: none;
@@ -38,79 +51,296 @@ body {
 }
 
 body {
-    font-size: 14px;
+    font-size: 15px;
     line-height: 1.6;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.005em;
+    background:
+        radial-gradient(ellipse at 50% 0%, #14224a 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 110%, #2a1605 0%, transparent 55%),
+        var(--bg);
+    background-attachment: fixed;
 }
 
 ::selection {
     background: var(--accent);
-    color: #050505;
+    color: #0a0a0a;
 }
 
+/* Typography utilities */
 .font-display {
-    font-family: "Cabinet Grotesk", sans-serif;
-    font-weight: 800;
-    letter-spacing: -0.03em;
+    font-family: "Fraunces", serif;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+}
+
+.font-serif-soft {
+    font-family: "Fraunces", serif;
+    font-weight: 500;
+}
+
+.font-sans {
+    font-family: "Manrope", sans-serif;
 }
 
 .font-mono {
-    font-family: "JetBrains Mono", monospace;
+    font-family: "Cinzel", serif;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
 }
 
 .label {
-    font-family: "JetBrains Mono", monospace;
+    font-family: "Cinzel", serif;
     text-transform: uppercase;
     font-size: 11px;
-    letter-spacing: 0.22em;
-    color: var(--fg-dim);
+    letter-spacing: 0.28em;
+    color: var(--accent);
+    font-weight: 600;
 }
 
-/* Grain overlay */
+.label-dim {
+    font-family: "Cinzel", serif;
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    font-weight: 600;
+}
+
+/* Starfield static layer */
+.starfield {
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(1px 1px at 20% 30%, rgba(255, 255, 255, 0.8), transparent 60%),
+        radial-gradient(1px 1px at 40% 70%, rgba(255, 255, 255, 0.6), transparent 60%),
+        radial-gradient(1px 1px at 60% 20%, rgba(255, 255, 255, 0.7), transparent 60%),
+        radial-gradient(1px 1px at 80% 50%, rgba(255, 255, 255, 0.5), transparent 60%),
+        radial-gradient(1px 1px at 15% 85%, rgba(255, 255, 255, 0.4), transparent 60%),
+        radial-gradient(1px 1px at 90% 10%, rgba(255, 255, 255, 0.6), transparent 60%),
+        radial-gradient(1px 1px at 50% 50%, rgba(255, 255, 255, 0.3), transparent 60%),
+        radial-gradient(2px 2px at 75% 80%, rgba(255, 200, 120, 0.5), transparent 60%),
+        radial-gradient(1px 1px at 25% 55%, rgba(255, 255, 255, 0.5), transparent 60%);
+    background-size: 800px 600px, 600px 800px, 700px 700px, 900px 600px,
+        500px 600px, 800px 500px, 600px 500px, 1000px 700px, 700px 800px;
+    background-repeat: repeat;
+    pointer-events: none;
+}
+
+/* Grain */
 .grain {
     position: fixed;
     inset: 0;
     pointer-events: none;
     z-index: 60;
-    opacity: 0.14;
+    opacity: 0.1;
     mix-blend-mode: overlay;
     background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.9 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
 }
 
-/* Vignette */
-.vignette::after {
+/* Parchment card frame — used on key surfaces */
+.parchment {
+    position: relative;
+    background:
+        linear-gradient(180deg, rgba(212, 161, 58, 0.04), transparent 30%),
+        linear-gradient(0deg, rgba(255, 129, 40, 0.05), transparent 30%),
+        var(--panel);
+    border: 1px solid var(--border);
+    box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.4) inset,
+        0 30px 60px -30px rgba(0, 0, 0, 0.8);
+}
+
+.parchment::before,
+.parchment::after {
     content: "";
     position: absolute;
-    inset: 0;
+    width: 22px;
+    height: 22px;
+    border: 1px solid var(--gold);
+    opacity: 0.55;
     pointer-events: none;
-    background: radial-gradient(
-        ellipse at center,
-        transparent 40%,
-        rgba(0, 0, 0, 0.65) 100%
+}
+.parchment::before {
+    top: -1px;
+    left: -1px;
+    border-right: none;
+    border-bottom: none;
+}
+.parchment::after {
+    bottom: -1px;
+    right: -1px;
+    border-left: none;
+    border-top: none;
+}
+
+.corner-tl,
+.corner-tr,
+.corner-bl,
+.corner-br {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-color: var(--gold);
+    opacity: 0.7;
+    pointer-events: none;
+}
+.corner-tl {
+    top: 8px;
+    left: 8px;
+    border-top: 1px solid;
+    border-left: 1px solid;
+}
+.corner-tr {
+    top: 8px;
+    right: 8px;
+    border-top: 1px solid;
+    border-right: 1px solid;
+}
+.corner-bl {
+    bottom: 8px;
+    left: 8px;
+    border-bottom: 1px solid;
+    border-left: 1px solid;
+}
+.corner-br {
+    bottom: 8px;
+    right: 8px;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+}
+
+/* Pill / chip */
+.chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 12px;
+    border: 1px solid var(--border-strong);
+    background: rgba(255, 129, 40, 0.06);
+    color: var(--fg);
+    font-family: "Manrope", sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    border-radius: 999px;
+    transition: all 220ms cubic-bezier(0.76, 0, 0.24, 1);
+}
+.chip:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(255, 129, 40, 0.12);
+}
+
+/* Icon button */
+.icon-btn {
+    width: 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    border: 1px solid var(--border-strong);
+    color: var(--fg);
+    background: transparent;
+    transition: all 220ms cubic-bezier(0.76, 0, 0.24, 1);
+}
+.icon-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-1px);
+}
+
+/* Resume button */
+.btn-quest {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: var(--accent);
+    color: #1a0a00;
+    font-family: "Cinzel", serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    transition: all 220ms cubic-bezier(0.76, 0, 0.24, 1);
+}
+.btn-quest:hover {
+    background: var(--accent-2);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 30px -10px rgba(255, 129, 40, 0.6);
+}
+
+.btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    color: var(--fg);
+    font-family: "Cinzel", serif;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    background: transparent;
+    transition: all 220ms cubic-bezier(0.76, 0, 0.24, 1);
+}
+.btn-ghost:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+/* Ornament divider */
+.ornament {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--gold);
+    opacity: 0.6;
+}
+.ornament::before,
+.ornament::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        var(--gold) 50%,
+        transparent
     );
 }
 
-/* Underline link */
-.link-underline {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
 }
-.link-underline::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: -2px;
-    width: 100%;
-    height: 1px;
-    background: currentColor;
-    transform: scaleX(0);
-    transform-origin: right;
-    transition: transform 600ms cubic-bezier(0.76, 0, 0.24, 1);
+::-webkit-scrollbar-track {
+    background: var(--bg);
 }
-.link-underline:hover::after {
-    transform: scaleX(1);
-    transform-origin: left;
+::-webkit-scrollbar-thumb {
+    background: rgba(212, 161, 58, 0.25);
+}
+
+input,
+textarea,
+button {
+    font-family: inherit;
+}
+input:focus,
+textarea:focus {
+    outline: none;
+}
+button {
+    cursor: none;
+}
+@media (max-width: 1024px) {
+    button {
+        cursor: pointer;
+    }
 }
 
 /* Marquee */
@@ -125,36 +355,32 @@ body {
 .marquee-track {
     display: inline-flex;
     white-space: nowrap;
-    animation: marquee 30s linear infinite;
+    animation: marquee 40s linear infinite;
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-    width: 8px;
-}
-::-webkit-scrollbar-track {
-    background: #050505;
-}
-::-webkit-scrollbar-thumb {
-    background: #1a1a1a;
-}
-
-input,
-textarea,
-button {
-    font-family: inherit;
-}
-
-input:focus,
-textarea:focus {
-    outline: none;
-}
-
-button {
-    cursor: none;
-}
-@media (max-width: 1024px) {
-    button {
-        cursor: pointer;
+/* Subtle ember glow */
+@keyframes ember {
+    0%, 100% {
+        opacity: 0.6;
+        transform: scale(1);
     }
+    50% {
+        opacity: 1;
+        transform: scale(1.15);
+    }
+}
+.ember-pulse {
+    animation: ember 2.6s ease-in-out infinite;
+}
+
+/* Torch flame anim */
+@keyframes flicker {
+    0%, 100% { opacity: 0.95; transform: scaleY(1); }
+    20% { opacity: 0.85; transform: scaleY(1.04); }
+    50% { opacity: 1; transform: scaleY(0.97); }
+    80% { opacity: 0.9; transform: scaleY(1.02); }
+}
+.torch-flame {
+    animation: flicker 1.4s ease-in-out infinite;
+    transform-origin: bottom center;
 }

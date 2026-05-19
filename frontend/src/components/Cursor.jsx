@@ -69,7 +69,6 @@ export default function Cursor() {
       <div
         ref={dot}
         className="fixed top-0 left-0 w-1.5 h-1.5 bg-[var(--accent)] rounded-full pointer-events-none z-[100] hidden lg:block"
-        style={{ transition: "width 200ms, height 200ms, opacity 200ms" }}
       />
       <div
         ref={ring}

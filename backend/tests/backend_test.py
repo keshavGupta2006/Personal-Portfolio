@@ -3,7 +3,7 @@ import os
 import pytest
 import requests
 
-BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "https://creative-hub-1062.preview.emergentagent.com").rstrip("/")
+BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "https://creative-hub-1062.preview.emergentagent.com").rstrip("/")  # noqa: E501
 API = f"{BASE_URL}/api"
 
 
@@ -49,6 +49,55 @@ def test_get_single_project(client):
 def test_get_project_404(client):
     r = client.get(f"{API}/projects/nonexistent")
     assert r.status_code == 404
+
+# ---- Projects: rarity field ----
+def test_projects_have_rarity(client):
+    r = client.get(f"{API}/projects")
+    assert r.status_code == 200
+    data = r.json()
+    ids_to_rarity = {p["id"]: p["rarity"] for p in data}
+    assert ids_to_rarity.get("proj-orbit") == "Legendary"
+    assert ids_to_rarity.get("proj-glass") == "Epic"
+    assert ids_to_rarity.get("proj-paper") == "Rare"
+    assert ids_to_rarity.get("proj-signal") == "Rare"
+
+
+# ---- Experiences ----
+def test_list_experiences(client):
+    r = client.get(f"{API}/experiences")
+    assert r.status_code == 200
+    data = r.json()
+    assert isinstance(data, list)
+    assert len(data) == 4
+    companies = {e["company"] for e in data}
+    assert companies == {"Aurora Labs", "The Foundry Co.", "CampusOS", "State University \u00b7 CS"}
+    for e in data:
+        for k in ("id", "level", "company", "role", "period", "current", "stack"):
+            assert k in e, f"missing {k}"
+        assert isinstance(e["level"], int)
+        assert isinstance(e["current"], bool)
+        assert "_id" not in e
+    # Aurora Labs is current
+    aurora = next(e for e in data if e["company"] == "Aurora Labs")
+    assert aurora["current"] is True
+
+
+# ---- Achievements ----
+def test_list_achievements(client):
+    r = client.get(f"{API}/achievements")
+    assert r.status_code == 200
+    data = r.json()
+    assert isinstance(data, list)
+    assert len(data) == 6
+    for a in data:
+        for k in ("id", "title", "sub", "rank"):
+            assert k in a, f"missing {k}"
+        assert "_id" not in a
+    titles = {a["title"] for a in data}
+    assert "Hackathon Open" in titles
+    assert "NASA Space Apps" in titles
+
+
 
 
 # ---- Contact ----
