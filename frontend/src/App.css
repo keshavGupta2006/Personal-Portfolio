@@ -1,6 +1,0 @@
-/* App-specific overrides intentionally minimal — most styles live in index.css */
-.App {
-    background: var(--bg);
-    color: var(--fg);
-    min-height: 100vh;
-}
